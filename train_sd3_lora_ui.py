@@ -239,8 +239,8 @@ def apply_debiased_estimation(loss, timesteps, noise_scheduler):
 
 def memory_stats():
     print("\nmemory_stats:\n")
-    print(torch.cuda.memory_allocated()/1024**2)
-    print(torch.cuda.memory_cached()/1024**2)
+    print(torch.xpu.memory_allocated()/1024**2)
+    print(torch.xpu.memory_cached()/1024**2)
 
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description="Simple example of a training script.")
@@ -869,8 +869,8 @@ def main(args):
 
     # Enable TF32 for faster training on Ampere GPUs,
     # cf https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices
-    if torch.cuda.is_available():
-        torch.backends.cuda.matmul.allow_tf32 = True
+    if torch.xpu.is_available():
+        torch.backends.xpu.matmul.allow_tf32 = True
 
     
 
@@ -1136,7 +1136,7 @@ def main(args):
             text_encoder_three.to("cpu")
             del vae, tokenizer_one,tokenizer_two,tokenizer_three, text_encoder_one,text_encoder_two,text_encoder_three
             gc.collect()
-            torch.cuda.empty_cache()
+            torch.xpu.empty_cache()
     
     # repeat_datarows = []
     # for datarow in datarows:
@@ -1489,7 +1489,7 @@ def main(args):
                         break
                     del step_loss
                     gc.collect()
-                    torch.cuda.empty_cache()
+                    torch.xpu.empty_cache()
             
         # ==================================================
         # validation part
@@ -1626,7 +1626,7 @@ def main(args):
                                 total_loss+=loss.detach()
                                 del latents, target, loss, model_pred,  timesteps,  bsz, noise, noisy_model_input
                                 gc.collect()
-                                torch.cuda.empty_cache()
+                                torch.xpu.empty_cache()
                                 
                             avg_loss = total_loss / num_batches
                             
@@ -1642,7 +1642,7 @@ def main(args):
                             del num_batches, avg_loss, total_loss
                         del validation_datarows, validation_dataset, val_batch_sampler, val_dataloader
                         gc.collect()
-                        torch.cuda.empty_cache()
+                        torch.xpu.empty_cache()
                         print("\nEnd val_loss\n")
             
         # restore rng before validation
@@ -1654,7 +1654,7 @@ def main(args):
         
         # del before_state, np_seed, py_state
         gc.collect()
-        torch.cuda.empty_cache()
+        torch.xpu.empty_cache()
         
         
         # ==================================================

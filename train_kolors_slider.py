@@ -832,8 +832,8 @@ def main(args):
 
     # Enable TF32 for faster training on Ampere GPUs,
     # cf https://pytorch.org/docs/stable/notes/cuda.html#tensorfloat-32-tf32-on-ampere-devices
-    if torch.cuda.is_available():
-        torch.backends.cuda.matmul.allow_tf32 = True
+    if torch.xpu.is_available():
+        torch.backends.xpu.matmul.allow_tf32 = True
 
 
     unet_lora_parameters = list(filter(lambda p: p.requires_grad, unet.parameters()))
@@ -1553,7 +1553,7 @@ def main(args):
 
         # del before_state, np_seed, py_state
         gc.collect()
-        torch.cuda.empty_cache()
+        torch.xpu.empty_cache()
         
         
         # ==================================================

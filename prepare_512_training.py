@@ -617,7 +617,7 @@ def main(args):
     uncondition_prompt_embeds = torch.stack([neg_npz_dict['prompt_embed']])
     uncondition_pooled_prompt_embeds = torch.stack([neg_npz_dict['pooled_prompt_embed']])
     
-    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.xpu.matmul.allow_tf32 = True
     # pipe.enable_sequential_cpu_offload()
     pipe.enable_vae_tiling()
     # mps_model = MPSModel()
